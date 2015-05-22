@@ -11,6 +11,14 @@
 |
 */
 
-$app->get('/', function() use ($app) {
-    return $app->welcome();
+$app->get('/', 'App\Http\Controllers\Controller@showHome');
+
+$app->group([
+    'namespace' => 'App\Http\Controllers\v1',
+    'prefix' => 'v1'
+], function ($app) {
+
+    /** @var \Laravel\Lumen\Application $app */
+    $app->get('/', 'WelcomeController@showIndex');
+
 });
