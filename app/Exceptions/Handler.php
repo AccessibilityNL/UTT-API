@@ -1,6 +1,7 @@
 <?php namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Support\Facades\Response;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler {
@@ -24,7 +25,7 @@ class Handler extends ExceptionHandler {
      */
     public function report(Exception $e)
     {
-        return parent::report($e);
+        parent::report($e);
     }
 
     /**
@@ -36,7 +37,12 @@ class Handler extends ExceptionHandler {
      */
     public function render($request, Exception $e)
     {
-        return parent::render($request, $e);
+        if($request->isJson()){
+            $code = $e->getCode() == 0 ? 422 : $e->getCode();
+            return response(['code'      =>  $code, 'message'   =>  $e->getMessage()], $code);
+        }else {
+            return parent::render($request, $e);
+        }
     }
 
 }
