@@ -6,7 +6,7 @@
  * Time: 11:47
  */
 
-namespace App\Http\Controllers\v1;
+namespace App\Http\Controllers\v2;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -16,7 +16,7 @@ class WelcomeController extends Controller
 
     public function showIndex()
     {
-        return ["msg" => "Hey"];
+        return ["msg" => "Ho"];
     }
 
 }
