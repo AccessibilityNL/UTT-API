@@ -12,7 +12,7 @@
 */
 
 $app->get('/', function () {
-    return '';
+    return 'utt-api';
 });
 
 $v1 = 'App\Http\Controllers\v1';
