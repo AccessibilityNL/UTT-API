@@ -21,6 +21,7 @@ class LDModel extends Model
         "dct" => "http://purl.org/dc/terms/#"
     ];
 
+
     protected $dates = ["date"];
 
     protected $model_vocs = [];
@@ -73,6 +74,7 @@ class LDModel extends Model
         return $this->parse_classname(get_class($this))['classname'];
     }
 
+
     private function parse_classname($name)
     {
         return array(
@@ -87,10 +89,15 @@ class LDModel extends Model
 
     private function getProperties(){
         $sharedProperties = [];
+
+        $sharedProperties[LDModel::NS] = url() . '/';
+
         if($this->timestamps){
             $sharedProperties["created_at"] = [ "@id" => "dct:date"];
             $sharedProperties["updated_at"] = [ "@id" => "dct:date"];
         }
         return array_merge($sharedProperties, $this->ld_properties);
     }
+
+
 }
