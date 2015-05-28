@@ -17,6 +17,10 @@ class Controller extends BaseController
 
         /** @var LDModel $instance */
         $instance = new $class();
+
+        if(!method_exists($instance, "getContext"))
+            app()->abort(404, "Class not found");
+
         return [
              "@context" => $instance->getContext(true)
         ];
