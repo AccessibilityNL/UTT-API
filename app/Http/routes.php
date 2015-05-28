@@ -38,6 +38,8 @@ $app->group([
         $app->get('/evaluations', $v1 . '\EvaluationController@listAction');
         $app->get('/evaluations/{id}', $v1 . '\EvaluationController@getAction');
 
+        $app->post('/evaluations', $v1 . '\EvaluationController@createAction');
+
     });
 
 $app->group([
