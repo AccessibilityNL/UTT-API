@@ -11,8 +11,11 @@ class Controller extends BaseController
 
     public function getContext($model)
     {
-        $class = "App\\Models\\" . ucfirst(str_singular($model));
-        if(!class_exists($class))
+        $model = ucfirst(str_singular($model));
+        $allowed_models = ["Webpage", "Evaluation", "Assertion"];
+
+        $class = "App\\Models\\" . $model;
+        if(!class_exists($class) || !in_array($model, $allowed_models))
             app()->abort(404, "Class not found");
 
         /** @var LDModel $instance */
@@ -25,5 +28,4 @@ class Controller extends BaseController
              "@context" => $instance->getContext(true)
         ];
     }
-
 }

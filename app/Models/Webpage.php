@@ -11,6 +11,8 @@ namespace App\Models;
 
 class Webpage extends LDModel{
 
+    protected $fillable = ["title", "date", "source"];
+
     protected $model_vocs = [
         "dcat" => "http://www.w3.org/ns/dcat#"
     ];

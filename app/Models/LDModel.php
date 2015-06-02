@@ -9,6 +9,7 @@
 namespace App\Models;
 
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Input;
 
@@ -17,10 +18,13 @@ class LDModel extends Model
 
     const NS = 'utt';
 
+    public $timestamps = false;
+
     private $global_vocs = [
         "dct" => "http://purl.org/dc/terms/#"
     ];
 
+    protected $has_context = true;
 
     protected $dates = ["date"];
 
@@ -29,14 +33,32 @@ class LDModel extends Model
 
     protected $hidden = ['deleted_at', 'id'];
 
+
+    public static function create(array $attributes)
+    {
+        $model = new static($attributes);
+        $model->date = new Carbon;
+        $model->save();
+
+        return $model;
+    }
+
+
     protected function getLDHeader()
     {
-        $expand = Input::has('include') && str_contains(Input::get('include'), 'context');
-        return [
-            "@context" => $this->getContext($expand),
-            "@type" => $this->getType(),
-            "@id" => $this->getLDId()
-        ];
+        if($this->has_context) {
+            $expand = Input::has('include') && str_contains(Input::get('include'), 'context');
+            return [
+                "@context" => $this->getContext($expand),
+                "@id" => $this->getLDId(),
+                "@type" => $this->getType(),
+            ];
+        }else{
+            return [
+                "@id" => $this->getLDId(),
+                "@type" => $this->getType(),
+            ];
+        }
     }
 
     public function getContext($expand = false)
@@ -48,11 +70,16 @@ class LDModel extends Model
                 $this->getProperties()
             );
         } else {
-            return url($this->getType(true) . '/context.jsonld');
+            return url('contexts/' .$this->getType() . '/context.jsonld');
         }
     }
 
     protected function getType($plural = false)
+    {
+       return $this->getTrueType($plural);
+    }
+
+    private function getTrueType($plural = false)
     {
         $type = strtolower(str_replace("controller", "", strtolower($this->getClassName())));
         return $plural ? str_plural($type) : $type;
@@ -60,7 +87,11 @@ class LDModel extends Model
 
     protected function getLDId()
     {
-        return LDModel::NS . ":" . $this->getType(true) . "/" . $this->id;
+        if($this->has_context) {
+            return LDModel::NS . ":" . $this->getTrueType(true) . "/" . $this->id;
+        }else{
+            return url() . "/" . $this->getTrueType(true) . "/" . $this->id;
+        }
     }
 
     public function toArray()
@@ -74,6 +105,11 @@ class LDModel extends Model
         return $this->parse_classname(get_class($this))['classname'];
     }
 
+
+    public function getDateAttribute($value)
+    {
+        return $this->asDateTime($value)->toIso8601String();
+    }
 
     private function parse_classname($name)
     {
@@ -91,11 +127,8 @@ class LDModel extends Model
         $sharedProperties = [];
 
         $sharedProperties[LDModel::NS] = url() . '/';
+        $sharedProperties["date"] = ["@type" => "http://www.w3.org/2001/XMLSchema#dateTime", "@id" => "dct:date"];
 
-        if($this->timestamps){
-            $sharedProperties["created_at"] = [ "@id" => "dct:date"];
-            $sharedProperties["updated_at"] = [ "@id" => "dct:date"];
-        }
         return array_merge($sharedProperties, $this->ld_properties);
     }
 

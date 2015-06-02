@@ -12,13 +12,13 @@
 */
 
 $app->get('/', function () {
-    return 'utt-api';
+    return 'utt-bookmarklet-api';
 });
 
 $v1 = 'App\Http\Controllers\v1';
 $v2 = 'App\Http\Controllers\v2';
 
-$app->get('/{model}/context.jsonld', 'App\Http\Controllers\Controller@getContext');
+$app->get('/contexts/{model}.jsonld', 'App\Http\Controllers\Controller@getContext');
 
 $app->group([
     'prefix' => 'v1'
@@ -28,12 +28,15 @@ $app->group([
 
         $app->get('/', $v1 . '\WelcomeController@showIndex');
 
+        $app->get('/assertor', $v1 . '\AssertorController@getOrCreateAction');
+        $app->get('/assertor/{id}', $v1 . '\AssertorController@getAction');
+
         $app->get('/assertions', $v1 . '\AssertionController@listAction');
         $app->get('/assertions/{id}', $v1 . '\AssertionController@getAction');
 
-        $app->get('/webpages', $v1 . '\WebpageController@listAction');
-        $app->get('/webpages/{id}', $v1 . '\WebpageController@getAction');
-        $app->get('/webpages/{id}/assertions', $v1 . '\WebpageController@getAction');
+        $app->post('/webpages', $v1 . '\WebpageController@createAction');
+        $app->get ('/webpages/{id}', $v1 . '\WebpageController@getAction');
+        $app->get ('/webpages/{id}/assertions', $v1 . '\WebpageController@getAction');
 
         $app->get('/evaluations', $v1 . '\EvaluationController@listAction');
         $app->get('/evaluations/{id}', $v1 . '\EvaluationController@getAction');
@@ -49,8 +52,5 @@ $app->group([
         /** @var \Laravel\Lumen\Application $app */
 
         $app->get('/', $v2 . '\WelcomeController@showIndex');
-
-        $app->get('/evaluations', $v1 . '\EvaluationController@list');
-        $app->get('/evaluations/{id}', $v1 . '\EvaluationController@get');
 
     });

@@ -13,15 +13,26 @@ class Assertion extends LDModel
 {
 
     protected $model_vocs = [
-        "earl" => "http://www.w3.org/TR/EARL10-Schema/#"
+        "@vocab" => "http://www.w3.org/ns/earl#",
+        "earl" => "http://www.w3.org/ns/earl#",
+        "wcagem" => "http://www.w3.org/TR/WCAG-EM/#",
+        "wcag20" => "http://www.w3.org/TR/WCAG20/#",
+        "auto" => "https://www.w3.org/community/auto-wcag/wiki/",
     ];
 
     protected $ld_properties = [
-        "outcome" => ["@type" => "@id", "@id" => "earl:outcome"],
         "subject" => ["@type" => "@id", "@id" => "earl:subject"],
         "assertedBy" => ["@type" => "@id", "@id" => "earl:assertedBy"],
-        "testRequirement" => ["@type" => "@id", "@id" => "earl:testRequirement"],
-        "result" => ["@id" => "earl:result"]
+        "mode" => ["@type" => "@id", "@id" => "earl:mode"],
+        "outcome" => ["@type" => "@id", "@id" => "earl:outcome"],
+        "isPartOf" => [
+            "@type" => "@id",
+            "@id" => "dct:isPartOf"
+        ],
+        "evaluation" => [
+            "@type" => "@id",
+            "@reverse" => "wcagem:step4"
+        ],
     ];
 
 }

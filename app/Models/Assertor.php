@@ -11,12 +11,14 @@ namespace App\Models;
 
 class Assertor extends LDModel{
 
-    protected $model_vocs = [
-    ];
+    protected $fillable = ["key_id", "date"];
 
-    protected $ld_properties = [
+    protected $has_context = false;
 
-    ];
+    protected $model_vocs = [];
+    protected $ld_properties = [];
+
+    protected $hidden = ["password"];
 
     protected function getType($plural = false)
     {

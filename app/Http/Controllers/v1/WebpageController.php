@@ -9,14 +9,37 @@
 namespace app\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Webpage;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
+
 
 class WebpageController extends Controller
 {
 
+    private $creationRules = [
+        "@context" => "required",
+        "@type" => "required",
+        "title" => "required",
+        "source" => "required|url",
+    ];
 
-    public function listAction()
+    public function createAction()
     {
-        return [];
+        $validator = Validator::make(
+            Input::all(),
+            $this->creationRules
+        );
+
+        if($validator->fails()){
+            app()->abort(422, $validator->messages()->first());
+        }
+
+        $webpage = Webpage::where(["source" => Input::get('source')])->first();
+        if(!$webpage)
+            $webpage = Webpage::create(Input::all());
+
+        return $webpage;
     }
 
     public function getAction($id)
