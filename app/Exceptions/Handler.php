@@ -39,7 +39,7 @@ class Handler extends ExceptionHandler
     {
         if ($request->isJson()) {
 
-            dd($e);
+//            dd($e);
             $message = str_replace("App\\Models\\", "", $e->getMessage());
 
             $code = $e->getCode() == 0 ? 422 : $e->getCode();
