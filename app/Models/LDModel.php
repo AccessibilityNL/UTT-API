@@ -47,7 +47,7 @@ class LDModel extends Model
     protected function getLDHeader()
     {
         if ($this->has_context) {
-            $expand = Input::has('include') && str_contains(Input::get('include'), 'context');
+            $expand = LDModel::hasInclude("context");
             return [
                 "@context" => $this->getContext($expand),
                 "@id" => $this->getLDId(),
@@ -60,6 +60,7 @@ class LDModel extends Model
             ];
         }
     }
+
 
     public function getContext($expand = false)
     {
@@ -100,6 +101,11 @@ class LDModel extends Model
         if(count($matches) < 2)
             return null;
         return $matches[1];
+    }
+
+    public static function hasInclude($value)
+    {
+        return Input::has('include') && str_contains(Input::get('include'), $value);
     }
 
     public function toArray()

@@ -9,6 +9,8 @@
 namespace App\Models;
 
 
+use Illuminate\Support\Facades\Input;
+
 class Assertion extends LDModel
 {
     protected $hidden = ["asserted_by", "subject_id", "evaluation_id"];
@@ -67,29 +69,35 @@ class Assertion extends LDModel
     /** Override parent to manually set test en result arrays right */
     public function toArray()
     {
-        $attributes = $this->attributesToArray();
+        $expand = LDModel::hasInclude("auditResult");
 
-        $attributes["test"] = [
-            "@id" => $attributes["test_id"],
-            "@type" => $attributes["test_type"]
-        ];
+        if($expand) {
+            $attributes = $this->attributesToArray();
 
-        unset($attributes["test_id"]);
-        unset($attributes["test_type"]);
+            $attributes["test"] = [
+                "@id" => $attributes["test_id"],
+                "@type" => $attributes["test_type"]
+            ];
 
-        $attributes["result"] = [
-            "@type" => $attributes["result_type"],
-            "outcome" => $attributes["result_outcome"]
-        ];
+            unset($attributes["test_id"]);
+            unset($attributes["test_type"]);
 
-        unset($attributes["result_type"]);
-        unset($attributes["result_outcome"]);
+            $attributes["result"] = [
+                "@type" => $attributes["result_type"],
+                "outcome" => $attributes["result_outcome"]
+            ];
+
+            unset($attributes["result_type"]);
+            unset($attributes["result_outcome"]);
 
 
-        //TODO handle partof
-        unset($attributes["test_partof_id"]);
-        unset($attributes["test_partof_type"]);
+            //TODO handle partof
+            unset($attributes["test_partof_id"]);
+            unset($attributes["test_partof_type"]);
 
-        return array_merge($this->getLDHeader(), $attributes, $this->relationsToArray());
+            return array_merge($this->getLDHeader(), $attributes, $this->relationsToArray());
+        }else{
+            return $this->getLDId();
+        }
     }
 }
