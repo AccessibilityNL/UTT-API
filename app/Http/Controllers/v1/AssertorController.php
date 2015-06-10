@@ -31,7 +31,6 @@ class AssertorController extends Controller{
             $assertor = Assertor::create($criteria);
 
         return Assertor::find($assertor->id);
-
     }
 
     public function getAction($id)

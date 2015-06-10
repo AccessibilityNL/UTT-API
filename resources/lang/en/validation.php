@@ -85,10 +85,15 @@ return [
     |
     */
 
+    "private_key"   => "The privateKey is invalid",
+    "ldid_exists"   => ":attribute not found",
+    "ldid_model"    => "Invalid model :attribute",
+
     'custom' => [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+
     ],
 
     /*

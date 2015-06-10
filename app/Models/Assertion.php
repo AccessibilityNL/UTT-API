@@ -11,6 +11,19 @@ namespace App\Models;
 
 class Assertion extends LDModel
 {
+    protected $hidden = ["asserted_by", "subject_id", "evaluation_id"];
+
+    protected $fillable = [
+        "date",
+        "mode",
+        "asserted_by",
+        "subject_id",
+        "test_id",
+        "test_type",
+        "test_partof_id",
+        "result_type",
+        "result_outcome"
+    ];
 
     protected $model_vocs = [
         "@vocab" => "http://www.w3.org/ns/earl#",
@@ -35,4 +48,48 @@ class Assertion extends LDModel
         ],
     ];
 
+
+    public function assertor()
+    {
+        return $this->belongsTo('App\Models\Assertor', "asserted_by");
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo('App\Models\Webpage');
+    }
+
+    public function evaluation()
+    {
+        return $this->belongsTo('App\Models\Evaluation');
+    }
+
+    /** Override parent to manually set test en result arrays right */
+    public function toArray()
+    {
+        $attributes = $this->attributesToArray();
+
+        $attributes["test"] = [
+            "@id" => $attributes["test_id"],
+            "@type" => $attributes["test_type"]
+        ];
+
+        unset($attributes["test_id"]);
+        unset($attributes["test_type"]);
+
+        $attributes["result"] = [
+            "@type" => $attributes["result_type"],
+            "outcome" => $attributes["result_outcome"]
+        ];
+
+        unset($attributes["result_type"]);
+        unset($attributes["result_outcome"]);
+
+
+        //TODO handle partof
+        unset($attributes["test_partof_id"]);
+        unset($attributes["test_partof_type"]);
+
+        return array_merge($this->getLDHeader(), $attributes, $this->relationsToArray());
+    }
 }

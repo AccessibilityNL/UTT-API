@@ -12,6 +12,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Validator;
 
 class LDModel extends Model
 {
@@ -43,17 +44,16 @@ class LDModel extends Model
         return $model;
     }
 
-
     protected function getLDHeader()
     {
-        if($this->has_context) {
+        if ($this->has_context) {
             $expand = Input::has('include') && str_contains(Input::get('include'), 'context');
             return [
                 "@context" => $this->getContext($expand),
                 "@id" => $this->getLDId(),
                 "@type" => $this->getType(),
             ];
-        }else{
+        } else {
             return [
                 "@id" => $this->getLDId(),
                 "@type" => $this->getType(),
@@ -70,13 +70,13 @@ class LDModel extends Model
                 $this->getProperties()
             );
         } else {
-            return url('contexts/' .$this->getType() . '/context.jsonld');
+            return url('contexts/' . $this->getType() . '/context.jsonld');
         }
     }
 
     protected function getType($plural = false)
     {
-       return $this->getTrueType($plural);
+        return $this->getTrueType($plural);
     }
 
     private function getTrueType($plural = false)
@@ -87,11 +87,19 @@ class LDModel extends Model
 
     protected function getLDId()
     {
-        if($this->has_context) {
+        if ($this->has_context) {
             return LDModel::NS . ":" . $this->getTrueType(true) . "/" . $this->id;
-        }else{
+        } else {
             return url() . "/" . $this->getTrueType(true) . "/" . $this->id;
         }
+    }
+
+    public static function getIdFromLdId($ldId)
+    {
+        preg_match("~\\S+/([0-9]+)~", $ldId, $matches);
+        if(count($matches) < 2)
+            return null;
+        return $matches[1];
     }
 
     public function toArray()
@@ -119,11 +127,13 @@ class LDModel extends Model
         );
     }
 
-    private function getVocs(){
+    private function getVocs()
+    {
         return array_merge($this->global_vocs, $this->model_vocs);
     }
 
-    private function getProperties(){
+    private function getProperties()
+    {
         $sharedProperties = [];
 
         $sharedProperties[LDModel::NS] = url() . '/';
@@ -132,5 +142,69 @@ class LDModel extends Model
         return array_merge($sharedProperties, $this->ld_properties);
     }
 
+    protected function getValidationRules()
+    {
+        $context = $this->getContext();
+        $type = $this->getType();
+
+        return [
+            "@context" => "required|regex:~\\b$context\\b~",
+            "@type" => "required|regex:~\\b$type\\b~"
+        ];
+    }
+
+    public function validateInput(array $values)
+    {
+
+        Validator::extend('private_key', function ($attr, $value, $parameters) use ($values) {
+
+            $ldid = array_get($values, "creator.@id");
+            preg_match("~^id:([a-z]+)/([0-9]+)$~", $ldid, $matches);
+            if (count($matches) != 3)
+                return false;
+            $id = $matches[2];
+
+            $result = Assertor::where(['id' => $id, 'key_id' => $value])->first();
+
+            return $result != null;
+        });
+
+        Validator::extend('ldid_exists', function ($attr, $value, $parameters) {
+
+            preg_match("~^id:([a-z]+)/([0-9]+)$~", $value, $matches);
+
+            if (count($matches) != 3)
+                return false;
+
+            $model = "App\\Models\\" . str_singular(ucfirst($matches[1]));
+            if (!class_exists($model))
+                return false;
+
+            $id = $matches[2];
+
+            $result = $model::where(['id' => $id])->first();
+            return $result != null;
+        });
+
+        Validator::extend('ldid_model', function ($attr, $value, $parameters) {
+
+            preg_match("~^id:([a-z]+)/([0-9]+)$~", $value, $matches);
+
+            if (count($matches) != 3)
+                return false;
+
+            //limit results to specific model
+            if (!isset($parameters[0]))
+                return false;
+
+            $invalidModel = $matches[1] != $parameters[0];
+            if ($invalidModel)
+                return false;
+
+            return true;
+        });
+
+        return Validator::make($values, $this->getValidationRules());
+    }
 
 }

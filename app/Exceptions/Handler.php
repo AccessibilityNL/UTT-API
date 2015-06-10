@@ -43,6 +43,8 @@ class Handler extends ExceptionHandler
             $message = str_replace("App\\Models\\", "", $e->getMessage());
 
             $code = $e->getCode() == 0 ? 422 : $e->getCode();
+            if($code > 500 || $code < 200)
+                $code = 422;
             return response(['code' => $code, 'message' => $message], $code);
         } else {
             return parent::render($request, $e);
