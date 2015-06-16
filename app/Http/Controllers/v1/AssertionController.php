@@ -9,11 +9,10 @@
 namespace app\Http\Controllers\v1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Assertion;
 
 class AssertionController extends Controller
 {
-
-    var $context = "/assertions/context.jsonld";
 
     public function listAction()
     {
@@ -22,13 +21,7 @@ class AssertionController extends Controller
 
     public function getAction($id)
     {
-        return $this->makeResponse($id, [
-            "creator" => "utt:assertors/123456",
-            "date" => "2015-01-01",
-            "auditResult" => [],
-            "evaluationScope" => []
-        ]);
-
+        return Assertion::find($id);
     }
 
 

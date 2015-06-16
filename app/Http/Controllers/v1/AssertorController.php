@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Input;
 class AssertorController extends Controller{
 
 
-    public function getorCreateAction(){
+    public function getOrCreateAction(){
 
         if(!Input::has('q'))
             app()->abort(422, "Invalid user key");
@@ -35,10 +35,7 @@ class AssertorController extends Controller{
 
     public function getAction($id)
     {
-        $assertor = Assertor::find($id);
-        if(!$assertor)
-            app()->abort(404, "Assertor not found");
-        return $assertor;
+        return Assertor::find($id);
     }
 
 }

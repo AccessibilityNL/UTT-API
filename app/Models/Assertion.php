@@ -13,7 +13,8 @@ class Assertion extends LDModel
 {
     protected $hidden = ["id", "asserted_by", "subject_id", "evaluation_id", "evaluation"];
     protected $autoExpandArray = [
-        'App\Http\Controllers\v1\EvaluationController@addAction'
+        'EvaluationController@addAction',
+        'AssertionController@getAction'
     ];
 
     protected $fillable = [
@@ -72,7 +73,9 @@ class Assertion extends LDModel
     public function toArray()
     {
 
-        $expand = LDModel::hasInclude("auditResult") || in_array(app('request')->route()[1]["uses"], $this->autoExpandArray);
+        $routeUses = str_replace('App\Http\Controllers\v1\\','', app('request')->route()[1]["uses"]);
+
+        $expand = LDModel::hasInclude("auditResult") || in_array($routeUses, $this->autoExpandArray);
 
         if ($expand) {
             $relations["assertedBy"] = $this->assertor()->getResults()->getLDId(true);
@@ -100,7 +103,6 @@ class Assertion extends LDModel
             //TODO handle partof
             unset($attributes["test_partof_id"]);
             unset($attributes["test_partof_type"]);
-
 
             return array_merge($this->getLDHeader(), $attributes, $this->relationsToArray());
         } else {
