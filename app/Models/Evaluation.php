@@ -16,6 +16,7 @@ class Evaluation extends LDModel
     protected $hidden = ["creator_id"];
     protected $appends = ["auditResult"];
 
+
     protected $model_vocs = [
         "earl" => "http://www.w3.org/TR/EARL10-Schema/#",
         "wcag20" => "http://www.w3.org/TR/WCAG20/#"
@@ -60,7 +61,7 @@ class Evaluation extends LDModel
         return [
             "creator"               => "required",
             "creator.@id"           => "required|ldid_exists",
-            "creator._privateKey"   => "required|private_key"
+            "creator._privateKey"   => "required|private_key:creator.@id"
         ];
     }
 

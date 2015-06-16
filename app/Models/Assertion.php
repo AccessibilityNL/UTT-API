@@ -9,11 +9,12 @@
 namespace App\Models;
 
 
-use Illuminate\Support\Facades\Input;
-
 class Assertion extends LDModel
 {
-    protected $hidden = ["asserted_by", "subject_id", "evaluation_id"];
+    protected $hidden = ["id", "asserted_by", "subject_id", "evaluation_id", "evaluation"];
+    protected $autoExpandArray = [
+        'App\Http\Controllers\v1\EvaluationController@addAction'
+    ];
 
     protected $fillable = [
         "date",
@@ -66,13 +67,19 @@ class Assertion extends LDModel
         return $this->belongsTo('App\Models\Evaluation');
     }
 
-    /** Override parent to manually set test en result arrays right */
+
+    /** Override parent to manually set test en result arrays */
     public function toArray()
     {
-        $expand = LDModel::hasInclude("auditResult");
 
-        if($expand) {
-            $attributes = $this->attributesToArray();
+        $expand = LDModel::hasInclude("auditResult") || in_array(app('request')->route()[1]["uses"], $this->autoExpandArray);
+
+        if ($expand) {
+            $relations["assertedBy"] = $this->assertor()->getResults()->getLDId(true);
+            $relations["evaluation"] = $this->evaluation()->getResults()->getLDId(true);
+            $relations["subject"] = $this->subject()->getResults()->getLDId(true);
+
+            $attributes = array_merge($relations,$this->attributesToArray());
 
             $attributes["test"] = [
                 "@id" => $attributes["test_id"],
@@ -90,14 +97,39 @@ class Assertion extends LDModel
             unset($attributes["result_type"]);
             unset($attributes["result_outcome"]);
 
-
             //TODO handle partof
             unset($attributes["test_partof_id"]);
             unset($attributes["test_partof_type"]);
 
+
             return array_merge($this->getLDHeader(), $attributes, $this->relationsToArray());
-        }else{
+        } else {
             return $this->getLDId();
         }
+    }
+
+    protected function getValidationRules()
+    {
+        $parentValidation = parent::getValidationRules();
+
+        return array_merge(
+            $parentValidation,
+            $this->getAuditValidationRules()
+        );
+
+    }
+
+    protected function getAuditValidationRules()
+    {
+        return [
+            "subject" => "required|ldid_exists",
+            "mode" => "required",
+            "assertedBy.@id" => "required|ldid_model:assertors|ldid_exists",
+            "assertedBy._privateKey" => "required|private_key:assertedBy.@id",
+            "test.@id" => "required",
+            "test.@type" => "required|regex:~^\\bTestRequirement\\b$~",
+            "result.@type" => "required|regex:~^\\bTestResult\\b$~",
+            "result.outcome" => "required"
+        ];
     }
 }

@@ -27,9 +27,9 @@ class EvaluationController extends Controller
         return [];
     }
 
-    public function getAction()
+    public function getAction($id)
     {
-        return Evaluation::find(1);
+        return Evaluation::find($id);
     }
 
     public function createAction()
@@ -76,4 +76,40 @@ class EvaluationController extends Controller
     }
 
 
+    public function addAction($id)
+    {
+
+        /** @var Evaluation $evaluation */
+        $evaluation = Evaluation::find($id);
+        if (!$evaluation) {
+            app()->abort(422, "Parent evaluation not found");
+        }
+
+        $model = new Assertion();
+        $input = Input::all();
+
+        $validator = $model->validateInput($input);
+
+        if ($validator->fails()) {
+            app()->abort(422, $validator->errors()->first());
+        }
+
+        $model->fill([
+            "date" => new Carbon,
+            "mode" => Input::get("mode"),
+            "test_id" => Input::get("test.@id"),
+            "test_type" => Input::get("test.@type"),
+            "result_type" => Input::get("result.@type"),
+            "result_outcome" => Input::get("result.outcome"),
+            "subject_id" => LDModel::getIdFromLdId(Input::get("subject")),
+            "asserted_by" => LDModel::getIdFromLdId(Input::get("assertedBy.@id"))
+        ]);
+
+
+        $model->evaluation()->associate($evaluation);
+
+        $model->save();
+
+        return $model;
+    }
 }

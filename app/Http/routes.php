@@ -42,6 +42,7 @@ $app->group([
         $app->get('/evaluations/{id}', $v1 . '\EvaluationController@getAction');
 
         $app->post('/evaluations', $v1 . '\EvaluationController@createAction');
+        $app->post('/evaluations/{id}/auditResult', $v1 . '\EvaluationController@addAction');
 
     });
 

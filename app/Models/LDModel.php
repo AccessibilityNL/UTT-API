@@ -86,9 +86,9 @@ class LDModel extends Model
         return $plural ? str_plural($type) : $type;
     }
 
-    protected function getLDId()
+    protected function getLDId($shorthand = false)
     {
-        if ($this->has_context) {
+        if ($this->has_context || $shorthand) {
             return LDModel::NS . ":" . $this->getTrueType(true) . "/" . $this->id;
         } else {
             return url() . "/" . $this->getTrueType(true) . "/" . $this->id;
@@ -164,11 +164,15 @@ class LDModel extends Model
 
         Validator::extend('private_key', function ($attr, $value, $parameters) use ($values) {
 
-            $ldid = array_get($values, "creator.@id");
-            preg_match("~^id:([a-z]+)/([0-9]+)$~", $ldid, $matches);
-            if (count($matches) != 3)
+
+            if (!isset($parameters[0]))
                 return false;
-            $id = $matches[2];
+
+            $ldid = array_get($values, $parameters[0]);
+            $id = $this->getIdFromLdId($ldid);
+
+            if(!$id)
+                return false;
 
             $result = Assertor::where(['id' => $id, 'key_id' => $value])->first();
 
@@ -179,14 +183,18 @@ class LDModel extends Model
 
             preg_match("~^id:([a-z]+)/([0-9]+)$~", $value, $matches);
 
+            if(count($matches) == 0)
+                preg_match("~^utt:([a-z]+)/([0-9]+)$~", $value, $matches);
             if (count($matches) != 3)
                 return false;
 
+            $id = $matches[2];
+
             $model = "App\\Models\\" . str_singular(ucfirst($matches[1]));
+
             if (!class_exists($model))
                 return false;
 
-            $id = $matches[2];
 
             $result = $model::where(['id' => $id])->first();
             return $result != null;
@@ -196,6 +204,8 @@ class LDModel extends Model
 
             preg_match("~^id:([a-z]+)/([0-9]+)$~", $value, $matches);
 
+            if(count($matches) == 0)
+                preg_match("~^utt:([a-z]+)/([0-9]+)$~", $value, $matches);
             if (count($matches) != 3)
                 return false;
 
