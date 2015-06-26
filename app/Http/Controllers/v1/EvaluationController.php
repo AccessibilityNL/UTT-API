@@ -72,7 +72,7 @@ class EvaluationController extends Controller
             $assertion->save();
         });
 
-        return $model;
+        return $this->response($model);
     }
 
 
@@ -110,6 +110,6 @@ class EvaluationController extends Controller
 
         $model->save();
 
-        return $model;
+        return $this->response($model);
     }
 }

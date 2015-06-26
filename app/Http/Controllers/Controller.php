@@ -9,6 +9,11 @@ class Controller extends BaseController
     var $context = '';
     var $type = '';
 
+    public function response($data, $code = 200, $headers = [ "Access-Control-Allow-Origin" => "*"])
+    {
+        return response($data, $code, $headers);
+    }
+
     public function getContext($model)
     {
         $model = ucfirst(str_singular($model));
