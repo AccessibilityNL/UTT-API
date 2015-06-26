@@ -30,12 +30,16 @@ class AssertorController extends Controller{
         if(!$assertor)
             $assertor = Assertor::create($criteria);
 
-        return Assertor::find($assertor->id);
+        return $this->response(
+            Assertor::find($assertor->id)
+        );
     }
 
     public function getAction($id)
     {
-        return Assertor::find($id);
+        return $this->response(
+            Assertor::find($id)
+        );
     }
 
 }

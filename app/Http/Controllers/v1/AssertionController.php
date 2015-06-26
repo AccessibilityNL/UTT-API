@@ -16,12 +16,16 @@ class AssertionController extends Controller
 
     public function listAction()
     {
-        return [];
+        return $this->response(
+            []
+        );
     }
 
     public function getAction($id)
     {
-        return Assertion::find($id);
+        return $this->response(
+            Assertion::find($id)
+        );
     }
 
 

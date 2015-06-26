@@ -24,12 +24,12 @@ class EvaluationController extends Controller
 
     public function listAction()
     {
-        return [];
+        return $this->response([]);
     }
 
     public function getAction($id)
     {
-        return Evaluation::find($id);
+        return $this->response(Evaluation::find($id));
     }
 
     public function createAction()

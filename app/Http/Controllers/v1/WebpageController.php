@@ -39,12 +39,12 @@ class WebpageController extends Controller
         if(!$webpage)
             $webpage = Webpage::create(Input::all());
 
-        return $webpage;
+        return $this->response($webpage);
     }
 
     public function getAction($id)
     {
-        return Webpage::find($id);
+        return $this->response(Webpage::find($id));
     }
 
 
