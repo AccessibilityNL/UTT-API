@@ -22,7 +22,6 @@ class AssertorController extends Controller{
         if(!Input::has('q'))
             app()->abort(422, "Invalid user key");
 
-
         $criteria = ["key_id" => Input::get('q')];
         $assertor = Assertor::where($criteria)->get()->first();
 

@@ -30,8 +30,8 @@ $app->group([
 
         $app->get('/', $v1 . '\WelcomeController@showIndex');
 
-        $app->get('/assertor', $v1 . '\AssertorController@getOrCreateAction');
-        $app->get('/assertor/{id}', $v1 . '\AssertorController@getAction');
+        $app->get('/assertors', $v1 . '\AssertorController@getOrCreateAction');
+        $app->get('/assertors/{id}', $v1 . '\AssertorController@getAction');
 
         $app->get('/assertions', $v1 . '\AssertionController@listAction');
         $app->get('/assertions/{id}', $v1 . '\AssertionController@getAction');
