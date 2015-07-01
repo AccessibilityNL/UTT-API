@@ -23,7 +23,8 @@ $v2 = 'App\Http\Controllers\v2';
 $app->get('/contexts/{model}.jsonld', 'App\Http\Controllers\Controller@getContext');
 
 $app->group([
-    'prefix' => 'v1'
+    'prefix' => 'v1',
+    'middleware' => 'cors'
 ],
     function ($app) use ($v1) {
         /** @var \Laravel\Lumen\Application $app */
@@ -49,7 +50,8 @@ $app->group([
     });
 
 $app->group([
-    'prefix' => 'v2'
+    'prefix' => 'v2',
+    'middleware' => 'cors'
 ],
     function ($app) use ($v1, $v2) {
         /** @var \Laravel\Lumen\Application $app */

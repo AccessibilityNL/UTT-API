@@ -63,9 +63,9 @@ $app->singleton(
 //     // 'Laravel\Lumen\Http\Middleware\VerifyCsrfToken',
 // ]);
 
-// $app->routeMiddleware([
-
-// ]);
+$app->routeMiddleware([
+    'cors' => 'App\Http\Middleware\CorsMiddleware',
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -78,7 +78,8 @@ $app->singleton(
 |
 */
 
-// $app->register('App\Providers\AppServiceProvider');
+ $app->register('App\Providers\AppServiceProvider');
+//$app->register('Dragonfire1119\Cors\Providers\CorsServiceProvider');
 
 /*
 |--------------------------------------------------------------------------

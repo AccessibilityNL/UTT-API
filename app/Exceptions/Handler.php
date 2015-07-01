@@ -2,6 +2,7 @@
 
 use Exception;
 use Laravel\Lumen\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -42,7 +43,11 @@ class Handler extends ExceptionHandler
 //            dd($e);
             $message = str_replace("App\\Models\\", "", $e->getMessage());
 
-            $code = $e->getCode() == 0 ? 422 : $e->getCode();
+            if($e instanceof NotFoundHttpException)
+                $code = 404;
+            else
+                $code = $e->getCode() == 0 ? 422 : $e->getCode();
+
             if($code > 500 || $code < 200)
                 $code = 422;
             return response(['code' => $code, 'message' => $message], $code);

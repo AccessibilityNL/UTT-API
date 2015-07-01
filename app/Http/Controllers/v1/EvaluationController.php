@@ -43,7 +43,6 @@ class EvaluationController extends Controller
             app()->abort(422, $validator->errors()->first());
         }
 
-
         $assertion = new Assertion([
             "date" => new Carbon,
             "mode" => Input::get("auditResult.mode"),
@@ -52,6 +51,7 @@ class EvaluationController extends Controller
             "result_type" => Input::get("auditResult.result.@type"),
             "result_outcome" => Input::get("auditResult.result.outcome")
         ]);
+
 
         DB::transaction(function () use ($model, $assertion) {
 
@@ -70,6 +70,7 @@ class EvaluationController extends Controller
             $assertion->evaluation()->associate($model);
 
             $assertion->save();
+
         });
 
         return $this->response($model);

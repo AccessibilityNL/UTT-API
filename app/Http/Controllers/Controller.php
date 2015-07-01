@@ -11,7 +11,7 @@ class Controller extends BaseController
 
     public function response($data, $code = 200, $headers = [ "Access-Control-Allow-Origin" => "*"])
     {
-        return response($data, $code, $headers);
+        return response($data, $code, []);
     }
 
     public function getContext($model)

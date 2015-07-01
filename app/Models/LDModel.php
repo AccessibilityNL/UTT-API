@@ -35,7 +35,7 @@ class LDModel extends Model
     protected $hidden = ['deleted_at', 'id'];
 
 
-    public static function create(array $attributes)
+    public static function create(array $attributes = [])
     {
         $model = new static($attributes);
         $model->date = new Carbon;
