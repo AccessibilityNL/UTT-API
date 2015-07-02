@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
         {
             $this->app->options($request->path(), function()
             {
-                return response('OK', 200);
+                return response('OK', 200, [ "Access-Control-Allow-Origin" => "*"]);
             });
         }
     }
