@@ -17,9 +17,11 @@ class AppServiceProvider extends ServiceProvider
 
         if($request->isMethod('OPTIONS'))
         {
-            $this->app->options($request->path(), function()
+            $this->app->options($request->path(), function() use ($request)
             {
-                return response('OK', 200, [ "Access-Control-Allow-Origin" => "*"]);
+                $response =  response('OK', 200);
+                $this->setCorsHeaders($request, $response);
+                return $response;
             });
         }
     }
