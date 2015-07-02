@@ -1,9 +1,17 @@
 <?php namespace App\Providers;
 
+use App\Http\Middleware\CorsMiddleware;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+
+    var $corsMiddleware;
+
+    function __construct(CorsMiddleware $corsMiddleware)
+    {
+        $this->corsMiddleware = $corsMiddleware;
+    }
 
     /**
      * Register any application services.
@@ -17,11 +25,13 @@ class AppServiceProvider extends ServiceProvider
 
         if($request->isMethod('OPTIONS'))
         {
-            $this->app->options($request->path(), function() use ($request)
+            $this->app->options($request->path(), function()
             {
-                $response =  response('OK', 200);
-                $this->setCorsHeaders($request, $response);
-                return $response;
+                return response('OK', 200, [
+                    "Access-Control-Allow-Origins" => "*",
+                    "Access-Control-Allow-Headers" => "Accept, Content-Type",
+                    "Access-Control-Allow-Methods" => "GET,HEAD,PUT,POST,DELETE",
+                ]);
             });
         }
     }

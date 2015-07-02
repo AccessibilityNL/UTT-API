@@ -33,7 +33,7 @@ class CorsMiddleware
 	 * @param  \Illuminate\Http\Response  $response
 	 * @return void
 	 */
-	protected function setCorsHeaders($request, $response) {
+	public function setCorsHeaders($request, $response) {
 
 		$allowedHeaders 	= explode(",", $this->allowedHeaders);
 		$allowedMethods 	= explode(",", $this->allowedMethods);
