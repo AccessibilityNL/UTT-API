@@ -1,0 +1,79 @@
+
+html {
+  color: #222;
+  font-size: 1em;
+  line-height: 1.4;
+}
+
+header {
+  max-width: 60em;
+  height: 80px;
+  background: #EEE;
+  padding: 20px;
+  margin: 1em auto;
+  border-radius: 5px;
+  border: solid 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+
+  div{
+    line-height: 40px;
+  }
+}
+
+article{
+  max-width: 60em;
+  margin: 1em auto;
+  padding: 20px;
+  background-color: #ccc;
+  border-radius: 5px;
+  border: solid 1px rgba(0, 0, 0, 0.2);
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-version-label, .dropdown-version{
+  width:64px;
+  min-width: inherit;
+
+  >li>span{
+    padding: 3px 20px !important;
+  }
+}
+
+.btn-submit{
+  width:100%;
+}
+
+.bigger-panel{
+  select{
+    min-height: 350px;
+  }
+  textarea{
+    min-height: 350px;
+  }
+}
+
+.dropdown-menu>li>span:focus, .dropdown-menu>li>span:hover {
+  color: #262626;
+  text-decoration: none;
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.dropdown-menu>li>span {
+  cursor: pointer;
+  display: block;
+  padding: 15px 25px;
+  clear: both;
+  font-weight: 400;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
+}
+
+select.form-control {
+  padding:0;
+
+  option{
+    padding: 20px;
+  }
+}

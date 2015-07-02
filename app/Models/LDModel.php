@@ -185,7 +185,6 @@ class LDModel extends Model
 
         Validator::extend('private_key', function ($attr, $value, $parameters) use ($values) {
 
-
             if (!isset($parameters[0]))
                 return false;
 

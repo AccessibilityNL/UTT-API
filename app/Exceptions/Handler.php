@@ -39,7 +39,7 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $e)
     {
         if ($request->isJson()) {
-
+            
             $message = str_replace("App\\Models\\", "", $e->getMessage());
 
             if($e instanceof NotFoundHttpException)

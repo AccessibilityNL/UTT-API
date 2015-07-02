@@ -12,7 +12,7 @@
 */
 
 $app->get('/', function () {
-    return 'utt-bookmarklet-api';
+    return view("index");
 });
 
 $v1 = 'App\Http\Controllers\v1';
