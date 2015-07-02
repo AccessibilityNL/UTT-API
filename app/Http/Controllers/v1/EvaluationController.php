@@ -43,35 +43,45 @@ class EvaluationController extends Controller
             app()->abort(422, $validator->errors()->first());
         }
 
-        $assertion = new Assertion([
-            "date" => new Carbon,
-            "mode" => Input::get("auditResult.mode"),
-            "test_id" => Input::get("auditResult.test.@id"),
-            "test_type" => Input::get("auditResult.test.@type"),
-            "result_type" => Input::get("auditResult.result.@type"),
-            "result_outcome" => Input::get("auditResult.result.outcome")
-        ]);
+        $audits = Input::get("auditResult");
 
+        foreach ($audits as $audit) {
 
-        DB::transaction(function () use ($model, $assertion) {
+            DB::transaction(function () use ($model, $audit) {
 
-            /** @var Assertor $assertor */
-            $assertor = Assertor::find(LDModel::getIdFromLdId(Input::get("creator.@id")));
+                $assertion = new Assertion([
+                    "date" => new Carbon,
+                    "mode" => $audit["mode"],
+                    "test_id" => $audit["test"]["@id"],
+                    "test_type" => $audit["test"]["@type"],
+                    "result_type" => $audit["result"]["@type"],
+                    "result_outcome" => $audit["result"]["outcome"]
+                ]);
 
-            $model->fill(["date" => new Carbon]);
-            $model->creator()->associate($assertor);
-            $model->save();
+                /** @var Assertor $assertor */
+                $assertor = Assertor::find(LDModel::getIdFromLdId(Input::get("creator.@id")));
 
-            /** @var Webpage $subject */
-            $subject = Webpage::find(LDModel::getIdFromLdId(Input::get("auditResult.subject")));
+                $model->fill(["date" => new Carbon]);
+                $model->creator()->associate($assertor);
+                $model->save();
 
-            $assertion->assertor()->associate($assertor);
-            $assertion->subject()->associate($subject);
-            $assertion->evaluation()->associate($model);
+                /** @var Webpage $subject */
+                $subject = Webpage::find(LDModel::getIdFromLdId($audit["subject"]));
 
-            $assertion->save();
+                if (!$subject) {
+                    app()->abort(422, "Subject not found");
+                }
 
-        });
+                $assertion->assertor()->associate($assertor);
+                $assertion->subject()->associate($subject);
+                $assertion->evaluation()->associate($model);
+
+                $assertion->save();
+
+            });
+
+        }
+
 
         return $this->response($model);
     }

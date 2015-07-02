@@ -14,14 +14,14 @@ class Controller extends BaseController
         return response($data, $code, $headers);
     }
 
-    public function getContext($model)
+    public function getContext($version, $model)
     {
         $model = ucfirst(str_singular($model));
-        $allowed_models = ["Webpage", "Evaluation", "Assertion"];
+        $allowed_models = ["Webpage", "Evaluation", "Assertion", "Assertor"];
 
         $class = "App\\Models\\" . $model;
         if(!class_exists($class) || !in_array($model, $allowed_models))
-            app()->abort(404, "Class not found");
+            app()->abort(404, "Class '$class' not found");
 
         /** @var LDModel $instance */
         $instance = new $class();

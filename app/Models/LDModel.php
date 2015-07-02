@@ -71,7 +71,7 @@ class LDModel extends Model
                 $this->getProperties()
             );
         } else {
-            return url('contexts/' . $this->getType() . '/context.jsonld');
+            return url('contexts/' . $this->getType(true) . '.jsonld');
         }
     }
 
@@ -150,17 +150,38 @@ class LDModel extends Model
 
     protected function getValidationRules()
     {
-        $context = $this->getContext();
         $type = $this->getType();
 
         return [
-            "@context" => "required|regex:~\\b$context\\b~",
+            "@context" => "required|check_context",
             "@type" => "required|regex:~\\b$type\\b~"
         ];
     }
 
     public function validateInput(array $values)
     {
+
+        Validator::extend("check_context", function($atts, $value, $parameters) use ($values){
+
+            preg_match("~^.+/([a-zA-Z]+).jsonld$~", $value, $matches);
+            if(count($matches) == 0)
+                return false;
+
+            $model = ucfirst(str_singular($matches[1])); //0 = entire string
+            $allowed_models = ["Webpage", "Evaluation", "Assertion", "Assertor"];
+
+            $class = "App\\Models\\" . $model;
+            if(!class_exists($class) || !in_array($model, $allowed_models))
+                return false;
+
+            /** @var LDModel $instance */
+            $instance = new $class();
+            if(!method_exists($instance, "getContext"))
+                return false;
+
+            return true;
+
+        });
 
         Validator::extend('private_key', function ($attr, $value, $parameters) use ($values) {
 

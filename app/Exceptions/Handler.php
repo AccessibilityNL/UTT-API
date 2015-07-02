@@ -49,9 +49,11 @@ class Handler extends ExceptionHandler
 
             if($code > 500 || $code < 200)
                 $code = 422;
+
             return response(['code' => $code, 'message' => $message], $code, [
                 "Access-Control-Allow-Origin" => "*",
             ]);
+
         } else {
             return parent::render($request, $e);
         }

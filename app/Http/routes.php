@@ -18,9 +18,7 @@ $app->get('/', function () {
 $v1 = 'App\Http\Controllers\v1';
 $v2 = 'App\Http\Controllers\v2';
 
-
-
-$app->get('/contexts/{model}.jsonld', 'App\Http\Controllers\Controller@getContext');
+$app->get('{version}/contexts/{model}.jsonld', 'App\Http\Controllers\Controller@getContext');
 
 $app->group([
     'prefix' => 'v1',

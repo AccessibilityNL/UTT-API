@@ -61,22 +61,22 @@ class Evaluation extends LDModel
         return [
             "creator"               => "required",
             "creator.@id"           => "required|ldid_exists",
-            "creator._privateKey"   => "required|private_key:creator.@id"
+            "creator.utt:_privateKey"   => "required|private_key:creator.@id"
         ];
     }
 
     protected function getAuditValidationRules()
     {
         return [
-            "auditResult"                   => "required",
-            "auditResult.@type"             => "required|regex:~^\\bAssertion\\b$~",
-            "auditResult.subject"           => "required|ldid_exists",
-            "auditResult.mode"              => "required",
-            "auditResult.assertedBy"        => "required|ldid_model:assertors|ldid_exists",
-            "auditResult.test.@id"          => "required",
-            "auditResult.test.@type"        => "required|regex:~^\\bTestRequirement\\b$~",
-            "auditResult.result.@type"      =>  "required|regex:~^\\bTestResult\\b$~",
-            "auditResult.result.outcome"    =>  "required"
+            "auditResult"                   => "required|array"
+//            "auditResult.@type"             => "required|regex:~^\\bAssertion\\b$~",
+//            "auditResult.subject"           => "required|ldid_exists",
+//            "auditResult.mode"              => "required",
+//            "auditResult.assertedBy"        => "required|ldid_model:assertors|ldid_exists",
+//            "auditResult.test.@id"          => "required",
+//            "auditResult.test.@type"        => "required|regex:~^\\bTestRequirement\\b$~",
+//            "auditResult.result.@type"      =>  "required|regex:~^\\bTestResult\\b$~",
+//            "auditResult.result.outcome"    =>  "required"
         ];
     }
 }
