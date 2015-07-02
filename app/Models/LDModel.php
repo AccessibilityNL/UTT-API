@@ -203,9 +203,11 @@ class LDModel extends Model
         Validator::extend('ldid_exists', function ($attr, $value, $parameters) {
 
             preg_match("~^id:([a-z]+)/([0-9]+)$~", $value, $matches);
-
             if(count($matches) == 0)
                 preg_match("~^utt:([a-z]+)/([0-9]+)$~", $value, $matches);
+            if(count($matches) == 0)
+                preg_match("~^" .  url("/") . "([a-z]+)/([0-9]+)$~", $value, $matches);
+
             if (count($matches) != 3)
                 return false;
 
