@@ -8,7 +8,12 @@
 
 namespace App\Models;
 
-
+/**
+ * Class Evaluation
+ * @package App\Models
+ *
+ * @property Assertor creator
+ */
 class Evaluation extends LDModel
 {
 
@@ -31,16 +36,22 @@ class Evaluation extends LDModel
     ];
 
 
-    public function creator(){
+    /**
+     * @return Assertor|LDModel
+     */
+    public function creator()
+    {
         return $this->belongsTo('App\Models\Assertor');
     }
 
 
-    public function auditResult(){
+    public function auditResult()
+    {
         return $this->hasMany('App\Models\Assertion');
     }
 
-    public function getAuditResultAttribute(){
+    public function getAuditResultAttribute()
+    {
         return $this->auditResult()->get();
     }
 
@@ -59,24 +70,32 @@ class Evaluation extends LDModel
     protected function getClientValidationRules()
     {
         return [
-            "creator"               => "required",
-            "creator.@id"           => "required|ldid_exists",
-            "creator.utt:_privateKey"   => "required|private_key:creator.@id"
+            "creator" => "required",
+            "creator.@id" => "required|ldid_exists",
+            "creator.utt:_privateKey" => "required|private_key:creator.@id"
         ];
     }
 
     protected function getAuditValidationRules()
     {
         return [
-            "auditResult"                   => "required|array"
-//            "auditResult.@type"             => "required|regex:~^\\bAssertion\\b$~",
-//            "auditResult.subject"           => "required|ldid_exists",
-//            "auditResult.mode"              => "required",
-//            "auditResult.assertedBy"        => "required|ldid_model:assertors|ldid_exists",
-//            "auditResult.test.@id"          => "required",
-//            "auditResult.test.@type"        => "required|regex:~^\\bTestRequirement\\b$~",
-//            "auditResult.result.@type"      =>  "required|regex:~^\\bTestResult\\b$~",
-//            "auditResult.result.outcome"    =>  "required"
+            "auditResult" => "required|array"
         ];
     }
+
+    /** Override parent to manually set test en result arrays */
+    public function toArray()
+    {
+
+        $attributes = $this->attributesToArray();
+        $all =  array_merge($this->getLDHeader(), $attributes, $this->relationsToArray());
+
+        if(!$this->hasInclude('creator')){
+            $all['creator'] = $this->creator->getLDId(true);
+        }
+
+        return $all;
+
+    }
+
 }

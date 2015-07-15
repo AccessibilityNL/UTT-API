@@ -79,7 +79,7 @@
             </div>
         </div>
         <div class="form-group col-md-6">
-            <input id="inputUrl" type="text" class="form-control" placeholder="/api/v1">
+            <input id="inputUrl" type="text" class="form-control" placeholder="/v1">
         </div>
 
         <div class="col-md-2">
@@ -95,7 +95,7 @@
 
         <div class="col-md-8">
 
-            <textarea class="form-control" rows="3"></textarea>
+            <textarea id="output" class="form-control" rows="3"></textarea>
 
         </div>
     </div>
@@ -112,7 +112,7 @@
     $(function () {
 
         var parameters = {
-            'base': '/api/',
+            'base': '/',
             'method': 'GET',
             'entity': '',
             'version': 'v1',
@@ -145,6 +145,10 @@
             "List webpages": {
                 'method': 'GET',
                 'entity': 'Webpage'
+            },
+            "Assertion context": {
+                'method': 'GET',
+                'entity': 'Assertion'
             }
         };
 
@@ -161,11 +165,17 @@
             setURLToInput();
         };
 
-        var setURLToInput = function(){
+        var setURLToInput = function () {
+
+            var url = '';
+            if(parameters['url'])
+                url = parameters['url'];
+
             $("#inputUrl").val(
                     parameters['base'] +
                     parameters['version'] +
-                    '/' + parameters['entity'].toLowerCase() + 's'
+                    '/' + parameters['entity'].toLowerCase() + 's',
+                    url
             );
         };
 
@@ -198,6 +208,17 @@
 
         $("#doRequest").click(function () {
             console.log(parameters);
+
+            $.ajax({
+                "method": parameters["method"],
+                "url": $("#inputUrl").val()
+            }).done(function (data, textStatus, jqXHR) {
+                console.log(data);
+                $("#output").empty().append(data);
+            }).fail(function (jqXHR) {
+                console.log(jqXHR.status + " - " + jqXHR.statusText);
+            });
+
         });
 
     });

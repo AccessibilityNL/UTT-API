@@ -14,7 +14,8 @@ class Assertion extends LDModel
     protected $hidden = ["id", "asserted_by", "subject_id", "evaluation_id", "evaluation"];
     protected $autoExpandArray = [
         'EvaluationController@addAction',
-        'AssertionController@getAction'
+        'AssertionController@getAction',
+        'AssertionController@createAction',
     ];
 
     protected $fillable = [
@@ -22,6 +23,7 @@ class Assertion extends LDModel
         "mode",
         "asserted_by",
         "subject_id",
+        "evaluation_id",
         "test_id",
         "test_type",
         "test_partof_id",
@@ -127,7 +129,7 @@ class Assertion extends LDModel
             "subject" => "required|ldid_exists",
             "mode" => "required",
             "assertedBy.@id" => "required|ldid_model:assertors|ldid_exists",
-            "assertedBy._privateKey" => "required|private_key:assertedBy.@id",
+            "assertedBy.utt:_privateKey" => "required|private_key:assertedBy.@id",
             "test.@id" => "required",
             "test.@type" => "required|regex:~^\\bTestRequirement\\b$~",
             "result.@type" => "required|regex:~^\\bTestResult\\b$~",

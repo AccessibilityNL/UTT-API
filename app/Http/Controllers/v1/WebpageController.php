@@ -35,9 +35,7 @@ class WebpageController extends Controller
             app()->abort(422, $validator->messages()->first());
         }
 
-        $webpage = Webpage::where(["source" => Input::get('source')])->first();
-        if(!$webpage)
-            $webpage = Webpage::create(Input::all());
+        $webpage = Webpage::create(Input::all());
 
         return $this->response($webpage);
     }

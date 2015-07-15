@@ -9,20 +9,22 @@
 namespace App\Models;
 
 
-class Assertor extends LDModel{
+class Assertor extends LDModel
+{
 
     protected $fillable = ["key_id", "date"];
-    protected $hidden = ["first_name", "sur_name", "email", "password", "key_id"];
+    protected $hidden = ["id", "first_name", "sur_name", "email", "password", "key_id"];
 
-    protected $has_context = false;
+    protected $model_vocs = [
+        "earl" => "http://www.w3.org/ns/earl#",
+        "wcagem" => "http://www.w3.org/TR/WCAG-EM/#",
+        "wcag20" => "http://www.w3.org/TR/WCAG20/#",
+        "auto" => "https://www.w3.org/community/auto-wcag/wiki/"
+    ];
 
-    protected $model_vocs = [];
-    protected $ld_properties = [];
+    protected $ld_properties = [
 
+    ];
 
-    protected function getType($plural = false)
-    {
-        return "http://xmlns.com/foaf/spec/#Person";
-    }
 
 }

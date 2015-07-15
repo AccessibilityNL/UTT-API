@@ -32,8 +32,9 @@ $app->group([
         $app->get('/assertors', $v1 . '\AssertorController@getOrCreateAction');
         $app->get('/assertors/{id}', $v1 . '\AssertorController@getAction');
 
-        $app->get('/assertions', $v1 . '\AssertionController@listAction');
-        $app->get('/assertions/{id}', $v1 . '\AssertionController@getAction');
+        $app->get ('/assertions', $v1 . '\AssertionController@listAction');
+        $app->post('/assertions', $v1 . '\AssertionController@createAction');
+        $app->get ('/assertions/{id}', $v1 . '\AssertionController@getAction');
 
         $app->post('/webpages', $v1 . '\WebpageController@createAction');
         $app->get ('/webpages/{id}', $v1 . '\WebpageController@getAction');

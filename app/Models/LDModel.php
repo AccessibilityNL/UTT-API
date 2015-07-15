@@ -154,7 +154,7 @@ class LDModel extends Model
 
         return [
             "@context" => "required|check_context",
-            "@type" => "required|regex:~\\b$type\\b~"
+            "@type" => "required|regex:~\\b$type\\b~i"
         ];
     }
 
@@ -205,7 +205,7 @@ class LDModel extends Model
             if(count($matches) == 0)
                 preg_match("~^utt:([a-z]+)/([0-9]+)$~", $value, $matches);
             if(count($matches) == 0)
-                preg_match("~^" .  url("/") . "([a-z]+)/([0-9]+)$~", $value, $matches);
+                preg_match("~^" . url() . "/([a-z]+)/([0-9]+)$~", $value, $matches);
 
             if (count($matches) != 3)
                 return false;
@@ -225,9 +225,11 @@ class LDModel extends Model
         Validator::extend('ldid_model', function ($attr, $value, $parameters) {
 
             preg_match("~^id:([a-z]+)/([0-9]+)$~", $value, $matches);
-
             if(count($matches) == 0)
                 preg_match("~^utt:([a-z]+)/([0-9]+)$~", $value, $matches);
+            if(count($matches) == 0)
+                preg_match("~^" . url() . "/([a-z]+)/([0-9]+)$~", $value, $matches);
+
             if (count($matches) != 3)
                 return false;
 
