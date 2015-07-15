@@ -21,6 +21,7 @@
         Bookmarklet API explorer
     </div>
     <div class="pull-right">
+
         API Version:
         <div class="btn-group dropdown">
             <button type="button"
@@ -95,6 +96,10 @@
 
         <div class="col-md-8">
 
+            <label for="input">Request body</label>
+            <textarea id="input" class="form-control" rows="3"></textarea>
+
+            <label for="input">Response body</label>
             <textarea id="output" class="form-control" rows="3"></textarea>
 
         </div>
@@ -119,6 +124,8 @@
             'url': ''
         };
 
+        var type = "normal";
+
         var dropdowns = {
             "version": [
                 ".version-v1",
@@ -138,17 +145,27 @@
         };
 
         var presets = {
-            "List assertions": {
+            "Get evaluation": {
                 'method': 'GET',
-                'entity': 'Assertion'
+                'entity': 'Evaluation',
+                'type': 'normal'
             },
-            "List webpages": {
+            "Get assertion": {
                 'method': 'GET',
-                'entity': 'Webpage'
+                'entity': 'Assertion',
+                'type': 'normal'
             },
-            "Assertion context": {
+            "Get assertor": {
                 'method': 'GET',
-                'entity': 'Assertion'
+                'entity': 'Assertor',
+                'type': 'normal',
+                'parameters': {
+                    'q': 'aasldjhoadhawwandkawudh892y38g'
+                }
+            },
+            "Context of entity": {
+                'method': 'GET',
+                'type': 'context'
             }
         };
 
@@ -156,27 +173,46 @@
 
             var preset = presets[title];
 
+            type = preset['type'];
+
             parameters['method'] = preset['method'];
-            parameters['entity'] = preset['entity'];
 
-            $("#method").find(".title")[0].innerText = preset['method'];
-            $("#entity").find(".title")[0].innerText = preset['entity'];
+            if (preset['entity'] != undefined) {
+                parameters['entity'] = preset['entity'];
+            } else if (parameters['entity'] == '') {
+                parameters['entity'] = 'Assertion';
+            }
 
-            setURLToInput();
+            $("#method").find(".title")[0].innerText = parameters['method'];
+            $("#entity").find(".title")[0].innerText = parameters['entity'];
+
+            setURLToInput(preset['parameters']);
         };
 
-        var setURLToInput = function () {
+        var setURLToInput = function (queryparameters) {
 
             var url = '';
-            if(parameters['url'])
-                url = parameters['url'];
+            if (type == 'normal') {
+                url = parameters['base'] +
+                parameters['version'] +
+                '/' + parameters['entity'].toLowerCase() + 's';
+            }
+            if (type == 'context') {
+                url = parameters['base'] +
+                parameters['version'] +
+                '/contexts/' + parameters['entity'].toLowerCase() + 's.jsonld'
+            }
 
-            $("#inputUrl").val(
-                    parameters['base'] +
-                    parameters['version'] +
-                    '/' + parameters['entity'].toLowerCase() + 's',
-                    url
-            );
+            if(queryparameters != undefined){
+                var didfirstparam = false;
+                for(var param in queryparameters){
+                    url += (didfirstparam ? "&" : "?") + param + '=' + queryparameters[param];
+                    didfirstparam = true;
+                }
+            }
+
+            console.log(url);
+            $("#inputUrl").val(url);
         };
 
         var setDropdownText = function (key, value) {
@@ -207,16 +243,16 @@
         });
 
         $("#doRequest").click(function () {
-            console.log(parameters);
-
             $.ajax({
                 "method": parameters["method"],
-                "url": $("#inputUrl").val()
-            }).done(function (data, textStatus, jqXHR) {
+                "url": $("#inputUrl").val(),
+                "accepts": "application/json",
+                "contentType": "application/json"
+            }).done(function (data) {
                 console.log(data);
-                $("#output").empty().append(data);
+                $("#output").val(JSON.stringify(data, null, 4));
             }).fail(function (jqXHR) {
-                console.log(jqXHR.status + " - " + jqXHR.statusText);
+                $("#output").val(JSON.stringify(JSON.parse(jqXHR.responseText), null, 4));
             });
 
         });

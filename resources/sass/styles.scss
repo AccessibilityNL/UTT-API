@@ -45,10 +45,20 @@ article{
 
 .bigger-panel{
   select{
-    min-height: 350px;
+    min-height: 500px;
   }
-  textarea{
-    min-height: 350px;
+
+  label{
+    height: 20px;
+    line-height: 20px;
+  }
+
+  #input{
+    height: 225px;
+  }
+
+  #output{
+    height: 225px;
   }
 }
 

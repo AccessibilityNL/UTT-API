@@ -34,9 +34,14 @@ article {
   width: 100%; }
 
 .bigger-panel select {
-  min-height: 350px; }
-.bigger-panel textarea {
-  min-height: 350px; }
+  min-height: 500px; }
+.bigger-panel label {
+  height: 20px;
+  line-height: 20px; }
+.bigger-panel #input {
+  height: 225px; }
+.bigger-panel #output {
+  height: 225px; }
 
 .dropdown-menu > li > span:focus, .dropdown-menu > li > span:hover {
   color: #262626;
