@@ -24,7 +24,9 @@ class EvaluationController extends Controller
 
     public function listAction()
     {
-        return $this->response([]);
+        return $this->response(
+            Evaluation::all()
+        );
     }
 
     public function getAction($id)

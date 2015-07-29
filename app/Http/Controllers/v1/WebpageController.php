@@ -24,6 +24,13 @@ class WebpageController extends Controller
         "source" => "required|url",
     ];
 
+    public function listAction()
+    {
+        return $this->response(
+            Webpage::all()
+        );
+    }
+
     public function createAction()
     {
         $validator = Validator::make(

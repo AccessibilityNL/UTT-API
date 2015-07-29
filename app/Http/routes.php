@@ -29,21 +29,21 @@ $app->group([
 
         $app->get('/', $v1 . '\WelcomeController@showIndex');
 
-        $app->get('/assertors', $v1 . '\AssertorController@getOrCreateAction');
-        $app->get('/assertors/{id}', $v1 . '\AssertorController@getAction');
+        $app->get('/assertors',                     $v1 . '\AssertorController@getOrCreateAction');
+        $app->get('/assertors/{id}',                $v1 . '\AssertorController@getAction');
 
-        $app->get ('/assertions', $v1 . '\AssertionController@listAction');
-        $app->post('/assertions', $v1 . '\AssertionController@createAction');
-        $app->get ('/assertions/{id}', $v1 . '\AssertionController@getAction');
+        $app->get ('/assertions',                   $v1 . '\AssertionController@listAction');
+        $app->post('/assertions',                   $v1 . '\AssertionController@createAction');
+        $app->get ('/assertions/{id}',              $v1 . '\AssertionController@getAction');
 
-        $app->post('/webpages', $v1 . '\WebpageController@createAction');
-        $app->get ('/webpages/{id}', $v1 . '\WebpageController@getAction');
-        $app->get ('/webpages/{id}/assertions', $v1 . '\WebpageController@getAction');
+        $app->get ('/webpages',                     $v1 . '\WebpageController@listAction');
+        $app->post('/webpages',                     $v1 . '\WebpageController@createAction');
+        $app->get ('/webpages/{id}',                $v1 . '\WebpageController@getAction');
+        $app->get ('/webpages/{id}/assertions',     $v1 . '\WebpageController@getAction');
 
-        $app->get('/evaluations', $v1 . '\EvaluationController@listAction');
-        $app->get('/evaluations/{id}', $v1 . '\EvaluationController@getAction');
-
-        $app->post('/evaluations', $v1 . '\EvaluationController@createAction');
+        $app->get ('/evaluations',                  $v1 . '\EvaluationController@listAction');
+        $app->post('/evaluations',                  $v1 . '\EvaluationController@createAction');
+        $app->get ('/evaluations/{id}',             $v1 . '\EvaluationController@getAction');
         $app->post('/evaluations/{id}/auditResult', $v1 . '\EvaluationController@addAction');
 
     });

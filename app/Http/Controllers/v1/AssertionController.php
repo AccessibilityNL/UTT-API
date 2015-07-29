@@ -20,7 +20,7 @@ class AssertionController extends Controller
     public function listAction()
     {
         return $this->response(
-            []
+            Assertion::all()
         );
     }
 
